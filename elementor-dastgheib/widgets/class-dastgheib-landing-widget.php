@@ -45,7 +45,7 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 		] );
 		$this->add_control( 'eyebrow_text', [ 'label' => 'نشان بالا', 'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'نسخه ۲٫۴ هم‌اکنون منتشر شد' ] );
 		$this->add_control( 'hero_h2_pre',  [ 'label' => 'عنوان — بخش اول',  'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'همراه معنوی شما،' ] );
-		$this->add_control( 'hero_h2_accent',[ 'label' => 'عنوان — بخش رنگی','type' => \Elementor\Controls_Manager::TEXT, 'default' => 'آثار و بیانات' ] );
+		$this->add_control( 'hero_h2_accent',[ 'label' => 'عنوان — بخش رنگی','type' => \Elementor\Controls_Manager::TEXT, 'default' => 'با آثار و بیانات' ] );
 		$this->add_control( 'hero_h2_post', [ 'label' => 'عنوان — بخش سوم',  'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'آیت‌الله دستغیب' ] );
 		$this->add_control( 'hero_lead',    [
 			'label'   => 'متن لید',
@@ -374,7 +374,7 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 					<div class="dgl-eyebrow"><span class="dgl-dot"></span> <?php echo esc_html( $s['eyebrow_text'] ); ?></div>
 					<h2 class="dgl-hero-h2">
 						<?php echo esc_html( $s['hero_h2_pre'] ); ?><br/>
-						با <span class="dgl-accent"><?php echo esc_html( $s['hero_h2_accent'] ); ?></span><br/>
+						<span class="dgl-accent"><?php echo esc_html( $s['hero_h2_accent'] ); ?></span><br/>
 						<?php echo esc_html( $s['hero_h2_post'] ); ?>
 					</h2>
 					<p class="dgl-hero-lead"><?php echo esc_html( $s['hero_lead'] ); ?></p>
