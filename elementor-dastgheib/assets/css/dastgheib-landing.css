@@ -283,6 +283,7 @@
 }
 .dgl-qr-grid span{background:var(--ink);border-radius:1px}
 .dgl-qr-grid span.off{background:transparent}
+.dgl-qr-img{width:180px;height:180px;object-fit:contain;border-radius:8px;display:block}
 .dgl-qr-logo{
   position:absolute;width:46px;height:46px;background:#fff;
   border-radius:10px;display:grid;place-items:center;border:3px solid #fff;

@@ -26,6 +26,11 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 		] );
 		$this->add_control( 'brand_title', [ 'label' => 'نام برند', 'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'آیت‌الله دستغیب' ] );
 		$this->add_control( 'brand_sub',   [ 'label' => 'زیرعنوان برند', 'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'DastgheibQoba.info' ] );
+		$this->add_control( 'logo_image',  [
+			'label'       => 'لوگو (تصویر)',
+			'type'        => \Elementor\Controls_Manager::MEDIA,
+			'description' => 'تصویر لوگو — در هدر و فوتر نمایش داده می‌شود. اگر خالی باشد، آیکون پیش‌فرض مسجد نشان داده می‌شود.',
+		] );
 		$this->add_control( 'nav_about',   [ 'label' => 'منو: معرفی',    'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'معرفی' ] );
 		$this->add_control( 'nav_features',[ 'label' => 'منو: مزایا',    'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'مزایا' ] );
 		$this->add_control( 'nav_screens', [ 'label' => 'منو: تصاویر',   'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'تصاویر' ] );
@@ -200,7 +205,12 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 		$this->add_control( 'dl_size_note',    [ 'label' => 'نکته حجم',      'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'حجم تقریبی: ۳۸ مگابایت — حداقل اندروید ۶ / iOS 13' ] );
 		$this->add_control( 'qr_title',        [ 'label' => 'QR — عنوان',    'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'اسکن برای دانلود' ] );
 		$this->add_control( 'qr_desc',         [ 'label' => 'QR — توضیح',    'type' => \Elementor\Controls_Manager::TEXT, 'default' => 'با دوربین گوشی خود کد را اسکن کنید تا به صفحهٔ نصب هدایت شوید.' ] );
-		$this->add_control( 'qr_seed',         [ 'label' => 'QR — رشته ژنراتور','type' => \Elementor\Controls_Manager::TEXT, 'default' => 'DastgheibQoba.info-app' ] );
+		$this->add_control( 'qr_image',        [
+			'label'       => 'QR — تصویر واقعی',
+			'type'        => \Elementor\Controls_Manager::MEDIA,
+			'description' => 'تصویر QR Code اصلی را آپلود کنید. اگر تصویر بگذارید، QR خودکار جایگزین می‌شود.',
+		] );
+		$this->add_control( 'qr_seed',         [ 'label' => 'QR — رشته ژنراتور (اگر تصویر ندارید)','type' => \Elementor\Controls_Manager::TEXT, 'default' => 'DastgheibQoba.info-app' ] );
 		$this->end_controls_section();
 
 		// ── Footer ───────────────────────────────────────────────
@@ -336,7 +346,7 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 		<header class="dgl-header">
 			<div class="dgl-nav">
 				<div class="dgl-brand">
-					<div class="dgl-brand-mark" aria-hidden="true"><?php echo $this->mosque_icon(); ?></div>
+					<div class="dgl-brand-mark" aria-hidden="true"><?php echo $this->render_brand_mark( $s ); ?></div>
 					<div class="dgl-brand-text">
 						<h1><?php echo esc_html( $s['brand_title'] ); ?></h1>
 						<p><?php echo esc_html( $s['brand_sub'] ); ?></p>
@@ -502,8 +512,12 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 					</div>
 					<div class="dgl-qr-card">
 						<div class="dgl-qr">
-							<div class="dgl-qr-grid" data-seed="<?php echo esc_attr( $s['qr_seed'] ); ?>"></div>
-							<div class="dgl-qr-logo"><div>د</div></div>
+							<?php if ( ! empty( $s['qr_image']['url'] ) ) : ?>
+								<img src="<?php echo esc_url( $s['qr_image']['url'] ); ?>" alt="QR Code" class="dgl-qr-img" />
+							<?php else : ?>
+								<div class="dgl-qr-grid" data-seed="<?php echo esc_attr( $s['qr_seed'] ); ?>"></div>
+								<div class="dgl-qr-logo"><div>د</div></div>
+							<?php endif; ?>
 						</div>
 						<b><?php echo esc_html( $s['qr_title'] ); ?></b>
 						<span class="dgl-qr-sub"><?php echo esc_html( $s['qr_desc'] ); ?></span>
@@ -518,7 +532,7 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 			<div class="dgl-foot-grid">
 				<div class="dgl-foot-brand">
 					<div class="dgl-brand">
-						<div class="dgl-brand-mark"><?php echo $this->mosque_icon(); ?></div>
+						<div class="dgl-brand-mark"><?php echo $this->render_brand_mark( $s ); ?></div>
 						<div class="dgl-brand-text"><h1><?php echo esc_html( $s['brand_title'] ); ?></h1><p><?php echo esc_html( $s['brand_sub'] ); ?></p></div>
 					</div>
 					<p><?php echo esc_html( $s['footer_desc'] ); ?></p>
@@ -553,6 +567,13 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 	// =========================================================
 	// HELPERS
 	// =========================================================
+	private function render_brand_mark( array $s ): string {
+		if ( ! empty( $s['logo_image']['url'] ) ) {
+			return '<img src="' . esc_url( $s['logo_image']['url'] ) . '" alt="' . esc_attr( $s['brand_title'] ) . '" style="width:100%;height:100%;object-fit:contain;border-radius:10px;" />';
+		}
+		return $this->mosque_icon();
+	}
+
 	private function hex_to_rgba( string $hex, float $alpha ): string {
 		$hex = ltrim( $hex, '#' );
 		if ( strlen( $hex ) === 3 ) $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
