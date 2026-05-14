@@ -164,19 +164,19 @@
     initAll();
   }
 
-  // ── Elementor frontend (editor preview) ──────────────────────
+  // ── Elementor editor preview only ────────────────────────────
+  // On live site, initAll() handles everything.
+  // This hook only re-runs after panel changes inside the editor.
   window.addEventListener('elementor/frontend/init', function () {
     if (typeof elementorFrontend === 'undefined') return;
     elementorFrontend.hooks.addAction(
       'frontend/element_ready/dastgheib_landing.default',
       function ($scope) {
+        if (!(elementorFrontend.isEditMode && elementorFrontend.isEditMode())) return;
         const container = $scope[0];
         if (container) {
-          // Only reset flags in editor so live site doesn't double-init
-          if (elementorFrontend.isEditMode()) {
-            container.querySelectorAll('.dgl-shots').forEach(s => delete s.dataset.dglInit);
-            container.querySelectorAll('.dgl-qr-grid').forEach(g => delete g.dataset.built);
-          }
+          container.querySelectorAll('.dgl-shots').forEach(s => delete s.dataset.dglInit);
+          container.querySelectorAll('.dgl-qr-grid').forEach(g => delete g.dataset.built);
           initWidget(container);
         }
       }
