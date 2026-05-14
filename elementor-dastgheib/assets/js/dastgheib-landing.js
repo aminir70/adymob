@@ -50,8 +50,11 @@
 
   // ── Carousel ─────────────────────────────────────────────────
   function initCarousel(section) {
-    if (section.dataset.dglInit) return;
-    section.dataset.dglInit = '1';
+    // Cancel any previous timer and listeners (safe to call multiple times)
+    if (section._dglTimer) { clearInterval(section._dglTimer); section._dglTimer = null; }
+    if (section._dglAbort) { section._dglAbort.abort(); }
+    section._dglAbort = new AbortController();
+    const { signal } = section._dglAbort;
 
     let screens;
     try {
@@ -66,21 +69,32 @@
     const dotsEl   = section.querySelector('.dgl-shot-dots');
     const framesEl = section.querySelector('.dgl-shot-frames');
     const infoEl   = section.querySelector('.dgl-shot-info');
-    const prevBtn  = section.querySelector('.dgl-prev-btn');
-    const nextBtn  = section.querySelector('.dgl-next-btn');
     if (!tabsEl || !framesEl || !infoEl) return;
+
+    // Clear before rebuilding — prevents duplication if called more than once
+    tabsEl.innerHTML = '';
+    dotsEl.innerHTML = '';
+    framesEl.innerHTML = '';
+
+    // Clone nav buttons to remove any stale click listeners
+    ['.dgl-prev-btn', '.dgl-next-btn'].forEach(sel => {
+      const el = section.querySelector(sel);
+      if (el) el.replaceWith(el.cloneNode(true));
+    });
+    const prevBtn = section.querySelector('.dgl-prev-btn');
+    const nextBtn = section.querySelector('.dgl-next-btn');
 
     // Build tabs, dots, phones
     screens.forEach((s, i) => {
       const btn = document.createElement('button');
       btn.className = 'dgl-shot-tab' + (i === 0 ? ' active' : '');
       btn.textContent = s.tab;
-      btn.addEventListener('click', () => setShot(i));
+      btn.addEventListener('click', () => setShot(i), { signal });
       tabsEl.appendChild(btn);
 
       const dot = document.createElement('span');
       dot.className = i === 0 ? 'active' : '';
-      dot.addEventListener('click', () => setShot(i));
+      dot.addEventListener('click', () => setShot(i), { signal });
       dotsEl.appendChild(dot);
 
       const ph = document.createElement('div');
@@ -121,16 +135,18 @@
         (listHTML ? '<ul class="dgl-info-list">' + listHTML + '</ul>' : '');
     }
 
+    function startTimer() { section._dglTimer = setInterval(() => setShot(current + 1), autoplayMs); }
+    function stopTimer()  { clearInterval(section._dglTimer); section._dglTimer = null; }
+    function resetTimer() { stopTimer(); startTimer(); }
+
     if (prevBtn) prevBtn.addEventListener('click', () => { setShot(current - 1); resetTimer(); });
     if (nextBtn) nextBtn.addEventListener('click', () => { setShot(current + 1); resetTimer(); });
 
     setShot(0);
+    startTimer();
 
-    // Auto-rotate
-    let timer = setInterval(() => setShot(current + 1), autoplayMs);
-    function resetTimer() { clearInterval(timer); timer = setInterval(() => setShot(current + 1), autoplayMs); }
-    section.addEventListener('mouseenter', () => clearInterval(timer));
-    section.addEventListener('mouseleave', () => { clearInterval(timer); timer = setInterval(() => setShot(current + 1), autoplayMs); });
+    section.addEventListener('mouseenter', stopTimer, { signal });
+    section.addEventListener('mouseleave', startTimer, { signal });
   }
 
   // ── Smooth scroll scoped to widget ───────────────────────────
@@ -175,7 +191,6 @@
         if (!(elementorFrontend.isEditMode && elementorFrontend.isEditMode())) return;
         const container = $scope[0];
         if (container) {
-          container.querySelectorAll('.dgl-shots').forEach(s => delete s.dataset.dglInit);
           container.querySelectorAll('.dgl-qr-grid').forEach(g => delete g.dataset.built);
           initWidget(container);
         }
