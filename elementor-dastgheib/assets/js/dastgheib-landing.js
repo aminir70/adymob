@@ -172,9 +172,11 @@
       function ($scope) {
         const container = $scope[0];
         if (container) {
-          // Reset init flags so re-render in editor works
-          container.querySelectorAll('.dgl-shots').forEach(s => delete s.dataset.dglInit);
-          container.querySelectorAll('.dgl-qr-grid').forEach(g => delete g.dataset.built);
+          // Only reset flags in editor so live site doesn't double-init
+          if (elementorFrontend.isEditMode()) {
+            container.querySelectorAll('.dgl-shots').forEach(s => delete s.dataset.dglInit);
+            container.querySelectorAll('.dgl-qr-grid').forEach(g => delete g.dataset.built);
+          }
           initWidget(container);
         }
       }
