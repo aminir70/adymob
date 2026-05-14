@@ -299,6 +299,31 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 			'selector' => '{{WRAPPER}} .dgl-btn, {{WRAPPER}} .dgl-dl-btn, {{WRAPPER}} .dgl-cta-mini',
 		] );
 		$this->end_controls_section();
+
+		// ── Button Colors ─────────────────────────────────────────
+		$this->start_controls_section( 'sec_btn_colors', [
+			'label' => '🔘 رنگ دکمه‌ها',
+			'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+		] );
+
+		$this->add_control( 'sec_hero_btns', [ 'label' => 'دکمه‌های هیرو', 'type' => \Elementor\Controls_Manager::HEADING ] );
+		$this->add_control( 'btn1_bg',    [ 'label' => 'دکمه اول — پس‌زمینه', 'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#0F1419' ] );
+		$this->add_control( 'btn1_color', [ 'label' => 'دکمه اول — رنگ متن',  'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#ffffff' ] );
+		$this->add_control( 'btn2_bg',    [ 'label' => 'دکمه دوم — پس‌زمینه', 'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#ffffff' ] );
+		$this->add_control( 'btn2_color', [ 'label' => 'دکمه دوم — رنگ متن',  'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#0F1419' ] );
+		$this->add_control( 'btn2_border',[ 'label' => 'دکمه دوم — رنگ کادر', 'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#E7E2D4' ] );
+
+		$this->add_control( 'sec_dl_btns', [ 'label' => 'دکمه‌های بخش دانلود', 'type' => \Elementor\Controls_Manager::HEADING, 'separator' => 'before' ] );
+		$this->add_control( 'dlbtn_bg',    [ 'label' => 'iOS/Android — پس‌زمینه', 'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#ffffff' ] );
+		$this->add_control( 'dlbtn_color', [ 'label' => 'iOS/Android — رنگ متن',  'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#0F1419' ] );
+		$this->add_control( 'dlbtn_pwa_bg',    [ 'label' => 'PWA — پس‌زمینه', 'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#1CA088' ] );
+		$this->add_control( 'dlbtn_pwa_color', [ 'label' => 'PWA — رنگ متن',  'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#ffffff' ] );
+
+		$this->add_control( 'sec_header_cta', [ 'label' => 'دکمه هدر', 'type' => \Elementor\Controls_Manager::HEADING, 'separator' => 'before' ] );
+		$this->add_control( 'cta_bg',    [ 'label' => 'هدر — پس‌زمینه', 'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#0F1419' ] );
+		$this->add_control( 'cta_color', [ 'label' => 'هدر — رنگ متن',  'type' => \Elementor\Controls_Manager::COLOR, 'default' => '#ffffff' ] );
+
+		$this->end_controls_section();
 	}
 
 	// =========================================================
@@ -324,6 +349,18 @@ class Dastgheib_Landing_Widget extends \Elementor\Widget_Base {
 			'--gold'         => $s['color_gold']     ?: '#B89557',
 			'--bg'           => $s['color_bg']       ?: '#FBF8F1',
 			'--red'          => '#C9483A',
+			// button colors
+			'--btn1-bg'       => $s['btn1_bg']        ?: '#0F1419',
+			'--btn1-color'    => $s['btn1_color']     ?: '#ffffff',
+			'--btn2-bg'       => $s['btn2_bg']        ?: '#ffffff',
+			'--btn2-color'    => $s['btn2_color']     ?: '#0F1419',
+			'--btn2-border'   => $s['btn2_border']    ?: '#E7E2D4',
+			'--dlbtn-bg'      => $s['dlbtn_bg']       ?: '#ffffff',
+			'--dlbtn-color'   => $s['dlbtn_color']    ?: '#0F1419',
+			'--dlbtn-pwa-bg'  => $s['dlbtn_pwa_bg']   ?: '#1CA088',
+			'--dlbtn-pwa-color'=> $s['dlbtn_pwa_color']?: '#ffffff',
+			'--cta-bg'        => $s['cta_bg']         ?: '#0F1419',
+			'--cta-color'     => $s['cta_color']      ?: '#ffffff',
 		];
 		$css_str = implode( ';', array_map( fn($k,$v) => "$k:$v", array_keys($css_vars), $css_vars ) );
 
